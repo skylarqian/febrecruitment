@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Reader</title>
+</head>
+<body>
+  <h1>Upload CSV File</h1>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload File</button>
+  </form>
+  {% for entry in sampleset %}
+    <h1>{{entry.number}}</h1>
+    <p>time stamp: {{entry.time_stamp}}</p>
+    <p>D1_Commanded_Torque: {{entry.D1_Commanded_Torque}}</p>
+    <p>D1_DC_Bus_Voltage: {{entry.D1_DC_Bus_Voltage}}</p>
+  {% endfor %}
+</body>
+</html>
