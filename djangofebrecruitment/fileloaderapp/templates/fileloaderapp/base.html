@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div class="header-container">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'fileloaderapp/styles.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </div>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>FEB CSV File Visualizer!</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Load a File</a></li>
+                <li><a href="/results">Results</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Block -->
+    <main>
+        {% block content %}
+        <!-- Page-specific content will be inserted here -->
+        {% endblock %}
+    </main>
+
+</body>
+</html>

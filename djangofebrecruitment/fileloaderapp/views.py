@@ -1,76 +1,114 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import UploadFileForm
+from .forms import UploadFileForm, SelectFileForm
 import csv
 import os
 
-sampleset = [
-    {
-        'number': 1,
-        'time_stamp': 42332,
-        'D1_Commanded_Torque': 24.2,
-        'D1_DC_Bus_Voltage': 504.835,
-    },
-    {
-        'number': 2,
-        'time_stamp': 3432,
-        'D1_Commanded_Torque': 32.1,
-        'D1_DC_Bus_Voltage' : 312.42
-    }
-]
+timestamp = []
+torque = []
+busvolt = []
+motospd = []
+ivtres = []
+wheelspd = []
+power = []
+increner = []
+totalener = []
+adjt = []
+file_path = ""
 
 def home(request):
-    if request.method == 'POST' and request.FILES['file']:
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Save the file to the database
-            uploaded_file = form.save()
-
-            # Process the CSV file and put into dataa
-            dataa = []
-            timestamp = []
-            torque = []
-            file_path = uploaded_file.file.path
-            with open(file_path, newline='') as csvfile:
-                csv_reader = csv.reader(csvfile)
-                i = 1
-                for row in csv_reader:
-                    if i != 1:
-                        print(row)  # Process each row as needed
-                        #change each to a float or int
-                        it = int(row[0])
-                        ts = float(row[1])
-                        ct = float(row[2])
-                        dcbv = float(row[3])
-                        ms = float(row[4])
-                        ri = float(row[5])
-                        timestamp.append(it)
-                        torque.append(ts)
-                        dataa.append({
-                            'initial_thing': it,
-                            'TimeStamp': ts,
-                            'D1_Commanded_Torque': ct,
-                            'D1_DC_Bus_Voltage': dcbv,
-                            'D2_Motor_Speed': ms,
-                            'IVT_Result_I': ri,
-                            'Wheel_Speed': row[6],
-                            'Power': row[7],
-                            'Incremental_Energy': row[8],
-                            'Total_Energy': row[9],
-                            'adjusted_time_ms': row[10],
-                            'time_on_video': row[11]
-                    })
-                    i = i+1
-                    
-            return render(request, "fileloaderapp/results.html", {'dataa': dataa, 'timestamp': timestamp, 'torque': torque})
-            #return HttpResponse('File uploaded and processed successfully!')
+    global file_path
+    if request.method == 'POST':
+        print('got FORM request')
+        upload_form = UploadFileForm(request.POST, request.FILES)
+        select_form = SelectFileForm(request.POST)
+                
+        if 'upload_file' in request.POST and upload_form.is_valid():
+            #check if file is uploaded
+            if 'file' in request.FILES:
+                # Save the file to the database
+                uploaded_file = upload_form.save()
+                file_path = uploaded_file.file.path
+                print('form is valid and saved')
+                processdata()
+                return redirect("results-page")
+        #use the selected existing file
+        elif 'select_file' in request.POST and select_form.is_valid():
+            print("processing selected file")
+            existing_file = select_form.cleaned_data['existing_file']
+            file_path = existing_file.file.path
+            print(f"Using existing file: {file_path}")
+            processdata()
+            return redirect("results-page")
+        #testing
+        print('done w post')
     else:
-        form = UploadFileForm()
-    context = {
-        'form': form,
-        'sampleset': sampleset
+        upload_form = UploadFileForm()
+        select_form = SelectFileForm()
+        context = {
+        'upload_form': upload_form,
+        'select_form': select_form
     }
     return render(request, "fileloaderapp/home.html", context)
+
+def processdata():
+    print('within processdata function with file_path', file_path)
+    global timestamp
+    global torque
+    global busvolt
+    global motospd
+    global ivtres
+    global wheelspd
+    global power
+    global increner
+    global totalener
+    global adjt
+    timestamp = []
+    torque = []
+    busvolt = []
+    motospd = []
+    ivtres = []
+    wheelspd = []
+    power = []
+    increner = []
+    totalener = []
+    adjt = []
+
+    with open(file_path, newline='') as csvfile:
+                csv_reader = csv.reader(csvfile)
+                firstrow = True
+                for row in csv_reader:
+                    if firstrow == False:
+                        timestamp.append(float(row[1]))
+                        torque.append(float(row[2]))
+                        busvolt.append(float(row[3]))
+                        motospd.append(float(row[4]))
+                        ivtres.append(float(row[5]))
+                        wheelspd.append(float(row[6]))
+                        power.append(float(row[7]))
+                        increner.append(float(row[8]))
+                        totalener.append(float(row[9]))
+                        adjt.append(float(row[10]))
+                    else:
+                         firstrow = False
+    print('right before redirect')
+    return
+
+
+def results(request):
+    return render(request, "fileloaderapp/results.html", {
+         'timestamp': timestamp,
+         'torque': torque,
+         'busvolt': busvolt,
+         'motospd': motospd,
+         'ivtres': ivtres,
+         'wheelspd': wheelspd,
+         'power': power,
+         'increner': increner,
+         'totalener': totalener,
+         'adjt': adjt
+    })
+    #return render(request, "fileloaderapp/results.html", {'timestamp': timestamp, 'torque': torque})
 
 def another(request):
     return render(request, "fileloaderapp/extrapage.html")

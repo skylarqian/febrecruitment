@@ -1,36 +1,381 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-  <title>your data visualized</title>
-</head>
-<body>
-  <h1>RESULTS UPLOADED!!</h1>
+{% extends "fileloaderapp/base.html" %}
 
-  <!--line graph!-->
-  <h1>graphing time_stamp vs D1_Commanded_Torque</h1>
+{% block title %}Results are Uploaded!{% endblock %}
+
+{% block content %}
+
+  <!--torque graph!-->
+  <h1>Time Stamp vs Commanded Torque</h1>
+  <canvas id="torqueChart" width="200" height="100"></canvas>
   <script>
-    const torque1 = torque
-    const timestamp1 = timestamp
-    const myChart = new Chart("myChart", {
-    type: "line",
-    data: {
-        labels: timestamp1,
-        datasets: [{
-            data: torque1
-        }]
-    },
-    options: {}
+    // Get the data from the Django context
+    const timestamps = {{ timestamp|safe }};
+    const torque_value = {{ torque|safe }};
+    
+    // Create a new Chart.js instance and draw the graph
+    const ctx = document.getElementById('torqueChart').getContext('2d');
+    const torqueChart = new Chart(ctx, {
+        type: 'line', // Line chart
+        data: {
+            labels: timestamps,  // X axis (timestamps)
+            datasets: [{
+                label: 'Torque',  // Y axis (torque)
+                data: torque_value,  // Y axis data
+                borderColor: 'rgb(75, 192, 192)',
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Torque'
+                    }
+                }
+            }
+        }
     });
-  </script>
-  <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
-  <h1>data points listed</h1>
-  {% for entry in dataa %}
-    <p>{{entry.initial_thing}}</p>
-    <p>TimeStamp: {{entry.TimeStamp}}</p>
-    <p>D1_Commanded_Torque: {{entry.D1_Commanded_Torque}}</p>
-  {% endfor %}
-</body>
-</html>
+</script>
+
+
+<!--busvolt graph!-->
+<h1>Time Stamp vs Bus Voltage</h1>
+<canvas id="busvoltChart" width="200" height="100"></canvas>
+<script>
+  // Get the data from the Django context
+  const busvolt_value = {{ busvolt|safe }};
+  
+  // Create a new Chart.js instance and draw the graph
+  const ctxb = document.getElementById('busvoltChart').getContext('2d');
+  const busvoltChart = new Chart(ctxb, {
+      type: 'line', // Line chart
+      data: {
+          labels: timestamps,  // X axis (timestamps)
+          datasets: [{
+              label: 'Torque',  // Y axis (torque)
+              data: busvolt_value,  // Y axis data
+              borderColor: 'rgb(75, 192, 192)',
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                  title: {
+                      display: true,
+                      text: 'Timestamp'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'Busvolt'
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+
+<!--motospd graph!-->
+<h1>Time Stamp vs Motor Speed</h1>
+<canvas id="motospdChart" width="200" height="100"></canvas>
+<script>
+  // Get the data from the Django context
+  const motospd_value = {{ motospd|safe }};
+  
+  // Create a new Chart.js instance and draw the graph
+  const ctxm = document.getElementById('motospdChart').getContext('2d');
+  const motospdChart = new Chart(ctxm, {
+      type: 'line', // Line chart
+      data: {
+          labels: timestamps,  // X axis (timestamps)
+          datasets: [{
+              label: 'Motor Speed',  // Y axis (torque)
+              data: motospd_value,  // Y axis data
+              borderColor: 'rgb(75, 192, 192)',
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                  title: {
+                      display: true,
+                      text: 'Timestamp'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'Motor speed'
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+
+<!--ivt result graph!-->
+<h1>Time Stamp vs IVT Result</h1>
+<canvas id="ivtresChart" width="200" height="100"></canvas>
+<script>
+  // Get the data from the Django context
+  const ivtres_value = {{ ivtres|safe }};
+  
+  // Create a new Chart.js instance and draw the graph
+  const ctxi = document.getElementById('ivtresChart').getContext('2d');
+  const ivtresChart = new Chart(ctxi, {
+      type: 'line', // Line chart
+      data: {
+          labels: timestamps,  // X axis (timestamps)
+          datasets: [{
+              label: 'ivt result',  // Y axis (torque)
+              data: ivtres_value,  // Y axis data
+              borderColor: 'rgb(75, 192, 192)',
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                  title: {
+                      display: true,
+                      text: 'Timestamp'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'IVT Result'
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+
+
+<!--wheel speed graph!-->
+<h1>Time Stamp vs Wheel Speed</h1>
+<canvas id="wheelspdChart" width="200" height="100"></canvas>
+<script>
+  // Get the data from the Django context
+  const wheelspd_value = {{ wheelspd|safe }};
+  
+  // Create a new Chart.js instance and draw the graph
+  const ctxw = document.getElementById('wheelspdChart').getContext('2d');
+  const wheelspdChart = new Chart(ctxw, {
+      type: 'line', // Line chart
+      data: {
+          labels: timestamps,  // X axis (timestamps)
+          datasets: [{
+              label: 'wheel speed',  // Y axis (torque)
+              data: wheelspd_value,  // Y axis data
+              borderColor: 'rgb(75, 192, 192)',
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                  title: {
+                      display: true,
+                      text: 'Timestamp'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'Wheel Speed'
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+
+
+<!--power graph!-->
+<h1>Time Stamp vs Power</h1>
+<canvas id="powerChart" width="200" height="100"></canvas>
+<script>
+  // Get the data from the Django context
+  const power_value = {{ power|safe }};
+  
+  // Create a new Chart.js instance and draw the graph
+  const ctxp = document.getElementById('powerChart').getContext('2d');
+  const powerChart = new Chart(ctxp, {
+      type: 'line', // Line chart
+      data: {
+          labels: timestamps,  // X axis (timestamps)
+          datasets: [{
+              label: 'power',  // Y axis (torque)
+              data: power_value,  // Y axis data
+              borderColor: 'rgb(75, 192, 192)',
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                  title: {
+                      display: true,
+                      text: 'Timestamp'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'power'
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+
+
+<!--incremental energy graph!-->
+<h1>Time Stamp vs Incremental Energy</h1>
+<canvas id="increnerChart" width="200" height="100"></canvas>
+<script>
+  // Get the data from the Django context
+  const increner_value = {{ increner|safe }};
+  
+  // Create a new Chart.js instance and draw the graph
+  const ctxin = document.getElementById('increnerChart').getContext('2d');
+  const increnerChart = new Chart(ctxin, {
+      type: 'line', // Line chart
+      data: {
+          labels: timestamps,  // X axis (timestamps)
+          datasets: [{
+              label: 'power',  // Y axis (torque)
+              data: increner_value,  // Y axis data
+              borderColor: 'rgb(75, 192, 192)',
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                  title: {
+                      display: true,
+                      text: 'Timestamp'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'Incremental Energy'
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+
+<!--total energy graph!-->
+<h1>Time Stamp vs Total Energy</h1>
+<canvas id="totalenerChart" width="200" height="100"></canvas>
+<script>
+  // Get the data from the Django context
+  const totalener_value = {{ totalener|safe }};
+  
+  // Create a new Chart.js instance and draw the graph
+  const ctxt = document.getElementById('totalenerChart').getContext('2d');
+  const totalenerChart = new Chart(ctxt, {
+      type: 'line', // Line chart
+      data: {
+          labels: timestamps,  // X axis (timestamps)
+          datasets: [{
+              label: 'power',  // Y axis (torque)
+              data: totalener_value,  // Y axis data
+              borderColor: 'rgb(75, 192, 192)',
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                  title: {
+                      display: true,
+                      text: 'Timestamp'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'Total Energy'
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+
+<!--total energy graph!-->
+<h1>Time Stamp vs Adjusted Time </h1>
+<canvas id="adjtChart" width="200" height="100"></canvas>
+<script>
+  // Get the data from the Django context
+  const adjt_value = {{ adjt|safe }};
+  
+  // Create a new Chart.js instance and draw the graph
+  const ctxa = document.getElementById('adjtChart').getContext('2d');
+  const adjtChart = new Chart(ctxa, {
+      type: 'line', // Line chart
+      data: {
+          labels: timestamps,  // X axis (timestamps)
+          datasets: [{
+              label: 'power',  // Y axis (torque)
+              data: adjt_value,  // Y axis data
+              borderColor: 'rgb(75, 192, 192)',
+              fill: false
+          }]
+      },
+      options: {
+          scales: {
+              x: {
+                  //type: 'linear', // You can use 'linear' for time-series or 'category' for categorical
+                  title: {
+                      display: true,
+                      text: 'Timestamp'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'Adjusted Time (ms)'
+                  }
+              }
+          }
+      }
+  });
+</script>
+
+  
+
+{% endblock %}
