@@ -1,0 +1,20 @@
+{% extends "fileloaderapp/base.html" %}
+
+{% block title %}Delete a File{% endblock %}
+
+{% block content %}
+
+<div class = "container">
+    <!-- Form to Select an Existing File -->
+    <h3>Select an Existing File to Delete From the Server</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ select_form.as_p }}
+        <button type="submit" name="select_file">Select</button>
+    </form>
+    {% if deleted %}
+    <p>file has been deleted!</p>
+    {% endif %}
+  </div>
+
+{% endblock %}

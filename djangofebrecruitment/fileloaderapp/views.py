@@ -110,5 +110,28 @@ def results(request):
     })
     #return render(request, "fileloaderapp/results.html", {'timestamp': timestamp, 'torque': torque})
 
+def deleteitem(request):
+    if request.method == "POST":
+        select_form = SelectFileForm(request.POST)
+        print("is valid? ", select_form.is_valid())
+        selected_file = select_form.cleaned_data['existing_file']
+        file_path = selected_file.file.path
+        if os.path.exists(file_path):
+            os.remove(file_path)  # Delete the file from the filesystem
+            selected_file.delete() #delete physical file
+            deleted = True
+            context = {
+             'deleted': deleted,
+             'select_form': select_form
+            }
+            return render(request, "fileloaderapp/delete.html", context)
+    else:
+        deleted = False
+        select_form = SelectFileForm()
+        context = {
+             'deleted': deleted,
+             'select_form': select_form
+        }
+        return render(request, "fileloaderapp/delete.html", context)
 def another(request):
     return render(request, "fileloaderapp/extrapage.html")

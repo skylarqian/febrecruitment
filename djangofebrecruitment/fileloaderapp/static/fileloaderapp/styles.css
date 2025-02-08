@@ -70,17 +70,19 @@ p {
     margin-bottom: 20px;
 }
 
-/* Footer Styles */
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 15px;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
+.upload-container {
+    display: flex; /* This creates a flex container */
+    justify-content: center; /* Centers the buttons horizontally */
+    gap: 20px; /* Space between the two buttons */
+    height: 100vh; /* Full viewport height to center vertically */
 }
 
+.container {
+    padding: 40px
+}
+.centerr {
+    text-align: center
+}
 /* Button Styles */
 button {
     padding: 10px 20px;
